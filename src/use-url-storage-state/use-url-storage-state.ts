@@ -1,0 +1,88 @@
+import { useCallback, useEffect, useMemo } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { kebabize } from '@/utils/url-helper';
+import { useStorage } from '@/use-storage/use-storage';
+
+type useUrlStorageStateParams<T> = {
+  storage?: Storage;
+  key: string;
+  prefix?: string;
+  defaultValue: T;
+};
+
+export function useUrlStorageState<T>({
+  key,
+  defaultValue,
+  prefix,
+  storage,
+}: useUrlStorageStateParams<T>) {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const identity = useCallback((state: string) => state, []);
+
+  const storageKey = prefix
+    ? `${prefix}_${key}`
+    : `urlStorage_${location.pathname}_${key}`;
+
+  const [storageState, setStorageState] = useStorage({
+    key: storageKey,
+    defaultValue: serializeState(defaultValue),
+    serialize: serializeState,
+    deserialize: identity,
+    storage,
+  });
+
+  useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+    const keyParam = searchParams.get(kebabize(key));
+
+    if (!keyParam) {
+      searchParams.set(kebabize(key), storageState);
+      navigate({ search: `?${searchParams.toString()}` }, { replace: true });
+    }
+  }, [storageState, key, navigate, location.search]);
+
+  useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+    const keyParam = searchParams.get(kebabize(key));
+
+    if (!keyParam) {
+      return;
+    }
+
+    setStorageState(keyParam);
+  }, [key, setStorageState, location.search]);
+
+  const updateState = useCallback(
+    (newValue: T) => {
+      const searchParams = new URLSearchParams(location.search);
+      searchParams.set(kebabize(key), serializeState(newValue));
+
+      navigate({
+        search: `?${searchParams.toString()}`,
+      });
+    },
+    [key, navigate, location.search]
+  );
+
+  const state: T | string = useMemo(() => {
+    const urlParam = new URLSearchParams(location.search).get(kebabize(key));
+    if (!urlParam) {
+      return defaultValue;
+    }
+    try {
+      return JSON.parse(urlParam) as T;
+    } catch {
+      return urlParam;
+    }
+  }, [key, location.search, defaultValue]);
+
+  return [state, updateState] as const;
+}
+
+function serializeState<T>(state: T) {
+  if (typeof state === 'string') {
+    return state;
+  }
+  return JSON.stringify(state);
+}
