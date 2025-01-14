@@ -15,6 +15,9 @@ export default defineConfig({
   },
   plugins: [
     peerDepsExternal(),
-    dtsPlugin({ rollupTypes: true, exclude: ['**/*.test.*'] }),
+    dtsPlugin({
+      rollupTypes: true,
+      exclude: ['**/*.test.*, ./src/setupTests.ts'],
+    }),
   ],
 });

@@ -1,6 +1,6 @@
 {
   "name": "use-url-storage-state",
-  "version": "0.1.0",
+  "version": "0.0.0-development",
   "description": "React hook for syncing state with URL parameters",
   "type": "module",
   "lint-staged": {
@@ -21,12 +21,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/username/use-url-storage-state.git"
+    "url": "https://github.com/orduer/use-url-storage-state.git"
   },
   "bugs": {
-    "url": "https://github.com/username/use-url-storage-state/issues"
+    "url": "https://github.com/orduer/use-url-storage-state/issues"
   },
-  "homepage": "https://github.com/username/use-url-storage-state#readme",
+  "homepage": "https://github.com/orduer/use-url-storage-state#readme",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -46,7 +46,8 @@
     "lint": "eslint src",
     "prepublishOnly": "pnpm run build",
     "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx}\"",
-    "prepare": "husky"
+    "prepare": "husky",
+    "semantic-release": "semantic-release"
   },
   "peerDependencies": {
     "react": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0",
@@ -58,6 +59,7 @@
     "@eslint/js": "^9.18.0",
     "@rollup/plugin-alias": "^5.1.1",
     "@rollup/plugin-typescript": "^12.1.2",
+    "@semantic-release/npm": "^12.0.1",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.1.0",
@@ -93,5 +95,8 @@
     "vite-plugin-dts": "^4.5.0",
     "vitest": "^2.1.8"
   },
-  "sideEffects": false
+  "sideEffects": false,
+  "publishConfig": {
+    "access": "public"
+  }
 }
