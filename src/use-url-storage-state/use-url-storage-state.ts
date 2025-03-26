@@ -60,7 +60,6 @@ export function useUrlStorageState<T>({
         typeof newValue === 'function'
           ? (newValue as (t: T) => T)(JSON.parse(storageState) as T)
           : newValue;
-      console.log(newValueToSet);
 
       searchParams.set(kebabize(key), serializeState(newValueToSet));
 
