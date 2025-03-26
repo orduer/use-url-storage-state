@@ -49,7 +49,17 @@ export function useStorage<ValueType>({
     [defaultValue, deserialize, forceInit, key, storage],
   );
 
-  const [value, setValue] = useState(initFromStorage);
+  const [value, _setValue] = useState(initFromStorage);
+
+  const setValue = useCallback<typeof _setValue>((val) => {
+    _setValue((prev) => {
+      if (typeof val === 'function') {
+        return (val as (prev: ValueType) => ValueType)(prev);
+      }
+
+      return val;
+    });
+  }, []);
 
   const prevKeyRef = useRef(key);
 
@@ -87,7 +97,7 @@ export function useStorage<ValueType>({
         return;
       }
 
-      setValue(fromStorage(event.newValue));
+      _setValue(fromStorage(event.newValue));
     }
   }, [defaultValue, fromStorage, key, live, serialize, value]);
 

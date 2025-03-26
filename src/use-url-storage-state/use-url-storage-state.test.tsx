@@ -98,6 +98,31 @@ test('updates state and URL correctly', () => {
   );
 });
 
+test('updating part of the state using updater function', () => {
+  const initialState: { one: string; two: string | number } = {
+    one: 'one',
+    two: 'two',
+  };
+  const { result } = renderHook(
+    () =>
+      useUrlStorageState({
+        defaultValue: initialState,
+        key: 'key',
+      }),
+    {
+      wrapper: BrowserRouter,
+    },
+  );
+  const [, setState] = result.current;
+
+  act(() => {
+    setState((prev) => ({ ...prev, two: '2' }));
+  });
+
+  const [state] = result.current;
+  expect(state).toEqual({ one: 'one', two: '2' });
+});
+
 test('updates the state for the current path only', async () => {
   render(<TestComponent />, {
     wrapper: BrowserRouter,

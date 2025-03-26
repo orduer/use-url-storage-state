@@ -105,6 +105,22 @@ test(`new version deleted old stored value`, () => {
   expect(state).toEqual(defaultValue);
 });
 
+test(`changing parts of the state`, () => {
+  const initialValue = { some: 'value', other: 'other value' };
+  const key = 'whatever';
+  window.localStorage.setItem(key, JSON.stringify(initialValue));
+  const { result } = renderHook(() =>
+    useStorage({ key, defaultValue: initialValue }),
+  );
+
+  const [_, setState] = result.current;
+
+  const updated = { ...initialValue, other: 'updated' };
+
+  act(() => setState((prev) => ({ ...prev, other: updated.other })));
+  expect(localStorage.getItem(key)).toEqual(JSON.stringify(updated));
+});
+
 test(`when storage is cleared, value should reset`, () => {
   const currentValue = 'old value';
   const key = 'some-key';

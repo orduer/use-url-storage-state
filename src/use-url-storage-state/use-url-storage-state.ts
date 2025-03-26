@@ -54,15 +54,21 @@ export function useUrlStorageState<T>({
   }, [key, setStorageState, location.search]);
 
   const updateState = useCallback(
-    (newValue: T) => {
+    (newValue: T | ((prev: T) => T)) => {
       const searchParams = new URLSearchParams(location.search);
-      searchParams.set(kebabize(key), serializeState(newValue));
+      const newValueToSet =
+        typeof newValue === 'function'
+          ? (newValue as (t: T) => T)(JSON.parse(storageState) as T)
+          : newValue;
+      console.log(newValueToSet);
+
+      searchParams.set(kebabize(key), serializeState(newValueToSet));
 
       navigate({
         search: `?${searchParams.toString()}`,
       });
     },
-    [key, navigate, location.search],
+    [key, navigate, location.search, storageState],
   );
 
   const state: T | string = useMemo(() => {
