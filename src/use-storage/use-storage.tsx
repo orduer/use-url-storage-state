@@ -46,7 +46,7 @@ export function useStorage<ValueType>({
       }
       return getDefaultValue(defaultValue);
     },
-    [defaultValue, deserialize, forceInit, key, storage]
+    [defaultValue, deserialize, forceInit, key, storage],
   );
 
   const [value, setValue] = useState(initFromStorage);
@@ -66,7 +66,7 @@ export function useStorage<ValueType>({
     (storedValue?: string | null) => {
       return initFromStorage(storedValue);
     },
-    [initFromStorage]
+    [initFromStorage],
   );
 
   useEffect(() => {
@@ -95,7 +95,7 @@ export function useStorage<ValueType>({
 }
 
 function getDefaultValue<ValueType>(
-  value: StorageProps<ValueType>['defaultValue']
+  value: StorageProps<ValueType>['defaultValue'],
 ) {
   return typeof value === 'function' ? (value as () => ValueType)() : value;
 }

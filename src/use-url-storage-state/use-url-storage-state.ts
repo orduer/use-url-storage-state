@@ -62,7 +62,7 @@ export function useUrlStorageState<T>({
         search: `?${searchParams.toString()}`,
       });
     },
-    [key, navigate, location.search]
+    [key, navigate, location.search],
   );
 
   const state: T | string = useMemo(() => {

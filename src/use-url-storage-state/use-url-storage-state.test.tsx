@@ -26,11 +26,11 @@ test('initializes state from given defaultState if URL is empty and storage has 
   expect(state).toEqual(defaultParams.defaultValue);
 
   expect(window.location.search).toBe(
-    `${existingUrl}&${defaultParams.key}=${defaultParams.defaultValue}`
+    `${existingUrl}&${defaultParams.key}=${defaultParams.defaultValue}`,
   );
 
   expect(window.localStorage.getItem(formatPathKey())).toBe(
-    defaultParams.defaultValue
+    defaultParams.defaultValue,
   );
 });
 
@@ -78,7 +78,7 @@ test('updates state and URL correctly', () => {
       }),
     {
       wrapper: BrowserRouter,
-    }
+    },
   );
   const newData = { test: 'updatedValue', optional: 'newField' };
   const [, setState] = result.current;
@@ -94,7 +94,7 @@ test('updates state and URL correctly', () => {
   expect(searchParams.get('key')).toBe(JSON.stringify(newData));
 
   expect(window.localStorage.getItem(formatPathKey())).toEqual(
-    JSON.stringify(newData)
+    JSON.stringify(newData),
   );
 });
 
@@ -108,10 +108,10 @@ test('updates the state for the current path only', async () => {
 
     expect(await screen.findByText(`state - ${path}`)).toBeInTheDocument();
     await userEvent.click(
-      await screen.findByRole('button', { name: 'Update State' })
+      await screen.findByRole('button', { name: 'Update State' }),
     );
     expect(
-      await screen.findByText(`state - updated ${path}`)
+      await screen.findByText(`state - updated ${path}`),
     ).toBeInTheDocument();
   }
 
@@ -137,7 +137,7 @@ test('applies prefix to storage key correctly', () => {
 
   const expectedKey = `${prefixedParams.prefix}_${defaultParams.key}`;
   expect(window.localStorage.getItem(expectedKey)).toBe(
-    defaultParams.defaultValue
+    defaultParams.defaultValue,
   );
 
   const searchParams = new URLSearchParams(window.location.search);

@@ -71,11 +71,11 @@ const Demo = () => {
       <input
         type='text'
         value={filters.search}
-        onChange={e => setFilters({ ...filters, search: e.target.value })}
+        onChange={(e) => setFilters({ ...filters, search: e.target.value })}
       />
       <select
         value={filters.category}
-        onChange={e => setFilters({ ...filters, category: e.target.value })}
+        onChange={(e) => setFilters({ ...filters, category: e.target.value })}
       >
         <option value='all'>All</option>
         <option value='electronics'>Electronics</option>
@@ -247,8 +247,8 @@ import { useStorage } from '@your-library/use-url-storage-state';
 const [user, setUser] = useStorage({
   key: 'user',
   defaultValue: { name: 'Guest' },
-  serialize: value => btoa(JSON.stringify(value)),
-  deserialize: str => JSON.parse(atob(str)),
+  serialize: (value) => btoa(JSON.stringify(value)),
+  deserialize: (str) => JSON.parse(atob(str)),
 });
 ```
 
@@ -272,12 +272,12 @@ import { useStorage } from '@your-library/use-url-storage-state';
 const [count, setCount] = useStorage({
   key: 'counter',
   defaultValue: 0,
-  forceInit: existingValue =>
+  forceInit: (existingValue) =>
     existingValue === undefined || existingValue === null,
 });
 
 // The key will be initialized to 0 only if it doesn't exist or is null.
-setCount(prev => prev + 1);
+setCount((prev) => prev + 1);
 ```
 
 #### Specifying `sessionStorage` Instead of `localStorage`
