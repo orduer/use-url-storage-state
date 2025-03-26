@@ -54,5 +54,4 @@ export default [
       'prettier/prettier': 'error',
     },
   },
-  // reactHooks.configs['recommended-latest'],
 ];
