@@ -9,14 +9,14 @@ test(`works like useState`, () => {
   const storageKey = 'some-key';
   const defaultValue = { key: 'value' };
   const { result } = renderHook(() =>
-    useStorage({ key: storageKey, defaultValue })
+    useStorage({ key: storageKey, defaultValue }),
   );
 
   const [state, setState] = result.current;
 
   expect(state).toEqual(defaultValue);
   expect(localStorage.getItem(storageKey)).toEqual(
-    JSON.stringify(defaultValue)
+    JSON.stringify(defaultValue),
   );
 
   const updated = { ...defaultValue, updated: true };
@@ -36,7 +36,7 @@ test(`initial state is the stored one`, () => {
         overrides: false,
         why: 'this is just an initial value when nothing is saved',
       },
-    })
+    }),
   );
 
   const [state] = result.current;
@@ -72,7 +72,7 @@ test(`deletes old storage when key is dynamic`, async () => {
   await userEvent.click(screen.getByRole('button', { name: preSavedValue }));
 
   expect(
-    screen.getByRole('button', { name: preSavedValue })
+    screen.getByRole('button', { name: preSavedValue }),
   ).toBeInTheDocument();
   expect(localStorage.getItem(key)).toBeNull();
   expect(localStorage.getItem(nextKey)).toEqual(preSavedValue);
@@ -93,16 +93,32 @@ test(`new version deleted old stored value`, () => {
       key,
       defaultValue,
       deserialize,
-      forceInit: stored => {
+      forceInit: (stored) => {
         const { version } = deserialize(stored || '') as typeof defaultValue;
         return version < 2;
       },
-    })
+    }),
   );
 
   const [state] = result.current;
 
   expect(state).toEqual(defaultValue);
+});
+
+test(`changing parts of the state`, () => {
+  const initialValue = { some: 'value', other: 'other value' };
+  const key = 'whatever';
+  window.localStorage.setItem(key, JSON.stringify(initialValue));
+  const { result } = renderHook(() =>
+    useStorage({ key, defaultValue: initialValue }),
+  );
+
+  const [_, setState] = result.current;
+
+  const updated = { ...initialValue, other: 'updated' };
+
+  act(() => setState((prev) => ({ ...prev, other: updated.other })));
+  expect(localStorage.getItem(key)).toEqual(JSON.stringify(updated));
 });
 
 test(`when storage is cleared, value should reset`, () => {
@@ -117,7 +133,7 @@ test(`when storage is cleared, value should reset`, () => {
       deserialize: identity,
       serialize: identity,
       live: true,
-    })
+    }),
   );
 
   // Dispatching manually since this doesn't work in JSDOM
@@ -143,7 +159,7 @@ test(`skip updating state when storage event has data that's already updated`, (
       key,
       defaultValue,
       live: true,
-    })
+    }),
   );
 
   (
@@ -184,7 +200,7 @@ function fireStorageEvent({
         newValue,
         oldValue,
         storageArea,
-      })
+      }),
     );
   });
 }
