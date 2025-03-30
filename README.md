@@ -104,11 +104,11 @@ type useUrlStorageStateParams<T> = {
 ### Returns
 
 ```typescript
-[T, (newValue: T) => void]
+[T, (newValue: T | ((prev: T) => T)) => void]
 ```
 
 - `T`: The current state value.
-- `(newValue: T) => void`: A function to update the state.
+- `(newValue: T | ((prev: T) => T)) => void`: A function to update the state.
 
 ## 🔧 Usage Examples
 
@@ -131,7 +131,7 @@ const [filters, setFilters] = useUrlStorageState({
 Using a shared prefix is useful when you want states across different paths or to share the same logical grouping in storage. For example, you might want all multiple pages to affect and persist the same url params:
 
 ```tsx
-import { useUrlStorageState } from '@your-library/use-url-storage-state';
+import { useUrlStorageState } from 'use-url-storage-state';
 
 const [filters, setFilters] = useUrlStorageState({
   key: 'filters',
@@ -155,7 +155,7 @@ This behavior prevents cross-page conflicts and keeps the state isolated to its 
 ### Using Session Storage
 
 ```tsx
-import { useUrlStorageState } from '@your-library/use-url-storage-state';
+import { useUrlStorageState } from 'use-url-storage-state';
 
 const [sessionState, setSessionState] = useUrlStorageState({
   key: 'userSession',
@@ -167,7 +167,7 @@ const [sessionState, setSessionState] = useUrlStorageState({
 ### Managing Multiple States
 
 ```tsx
-import { useUrlStorageState } from '@your-library/use-url-storage-state';
+import { useUrlStorageState } from 'use-url-storage-state';
 
 const [filters, setFilters] = useUrlStorageState({
   key: 'filters',
@@ -221,7 +221,7 @@ type StorageProps<ValueType> = {
 #### Returns
 
 ```typescript
-[ValueType, (newValue: ValueType) => void]
+[ValueType, (newValue: ValueType | ((prev: ValueType) => ValueType)) => void]
 ```
 
 ### 🔧 Usage Examples
@@ -229,7 +229,7 @@ type StorageProps<ValueType> = {
 #### Basic Usage
 
 ```tsx
-import { useStorage } from '@your-library/use-url-storage-state';
+import { useStorage } from 'use-url-storage-state';
 
 const [value, setValue] = useStorage({
   key: 'myKey',
@@ -242,7 +242,7 @@ setValue('newValue');
 #### Custom Serialization
 
 ```tsx
-import { useStorage } from '@your-library/use-url-storage-state';
+import { useStorage } from 'use-url-storage-state';
 
 const [user, setUser] = useStorage({
   key: 'user',
@@ -255,7 +255,7 @@ const [user, setUser] = useStorage({
 #### Live Synchronization
 
 ```tsx
-import { useStorage } from '@your-library/use-url-storage-state';
+import { useStorage } from 'use-url-storage-state';
 
 const [theme, setTheme] = useStorage({
   key: 'theme',
@@ -267,7 +267,7 @@ const [theme, setTheme] = useStorage({
 #### Using `forceInit` for Conditional Initialization
 
 ```tsx
-import { useStorage } from '@your-library/use-url-storage-state';
+import { useStorage } from 'use-url-storage-state';
 
 const [count, setCount] = useStorage({
   key: 'counter',
@@ -283,7 +283,7 @@ setCount((prev) => prev + 1);
 #### Specifying `sessionStorage` Instead of `localStorage`
 
 ```tsx
-import { useStorage } from '@your-library/use-url-storage-state';
+import { useStorage } from 'use-url-storage-state';
 
 const [sessionData, setSessionData] = useStorage({
   key: 'sessionKey',
