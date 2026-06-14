@@ -3,11 +3,14 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { kebabize } from '@/utils/url-helper';
 import { useStorage } from '@/use-storage/use-storage';
 
+const SEPARATOR = ',';
+
 type useUrlStorageStateParams<T> = {
   storage?: Storage;
   key: string;
   prefix?: string;
   defaultValue: T;
+  previousKeys?: string[];
 };
 
 export function useUrlStorageState<T>({
@@ -15,6 +18,7 @@ export function useUrlStorageState<T>({
   defaultValue,
   prefix,
   storage,
+  previousKeys,
 }: useUrlStorageStateParams<T>) {
   const location = useLocation();
   const navigate = useNavigate();
@@ -24,12 +28,27 @@ export function useUrlStorageState<T>({
     ? `${prefix}_${key}`
     : `urlStorage_${location.pathname}_${key}`;
 
+  const previousKeysJoined = previousKeys?.join(SEPARATOR);
+  const resolvedPreviousKeys = useMemo(
+    () =>
+      previousKeysJoined
+        ?.split(SEPARATOR)
+        .filter(Boolean)
+        .map((oldKey) =>
+          prefix
+            ? `${prefix}_${oldKey}`
+            : `urlStorage_${location.pathname}_${oldKey}`,
+        ),
+    [prefix, location.pathname, previousKeysJoined],
+  );
+
   const [storageState, setStorageState] = useStorage({
     key: storageKey,
     defaultValue: serializeState(defaultValue),
     serialize: serializeState,
     deserialize: identity,
     storage,
+    previousKeys: resolvedPreviousKeys,
   });
 
   useEffect(() => {
