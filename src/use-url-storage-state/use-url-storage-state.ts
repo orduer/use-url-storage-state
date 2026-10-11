@@ -11,6 +11,7 @@ export type useUrlStorageStateParams<T> = {
   prefix?: string;
   defaultValue: T;
   previousKeys?: string[];
+  onError?: (error: unknown, data: { key: string; value: T }) => void;
 };
 
 export function useUrlStorageState<T>({
@@ -19,10 +20,10 @@ export function useUrlStorageState<T>({
   prefix,
   storage,
   previousKeys,
+  onError,
 }: useUrlStorageStateParams<T>) {
   const location = useLocation();
   const navigate = useNavigate();
-  const identity = useCallback((state: string) => state, []);
 
   const storageKey = prefix
     ? `${prefix}_${key}`
@@ -49,6 +50,8 @@ export function useUrlStorageState<T>({
     deserialize: identity,
     storage,
     previousKeys: resolvedPreviousKeys,
+    onError: (error, data) =>
+      onError?.(error, { key: storageKey, value: data as T }),
   });
 
   useEffect(() => {
@@ -109,4 +112,8 @@ function serializeState<T>(state: T) {
     return state;
   }
   return JSON.stringify(state);
+}
+
+function identity<T>(value: T) {
+  return value;
 }
