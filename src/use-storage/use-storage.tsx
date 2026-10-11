@@ -9,7 +9,7 @@ export type StorageProps<ValueType> = {
   deserialize?: (str: string) => ValueType;
   forceInit?: (value?: string) => boolean;
   previousKeys?: string[];
-  onError?: (error: unknown) => void;
+  onError?: (error: unknown, data: { key: string; value: ValueType }) => void;
 };
 
 function never() {
@@ -68,6 +68,12 @@ export function useStorage<ValueType>({
       });
   }, [previousKeysJoined, storage]);
 
+  const onErrorRef = useRef(onError);
+
+  useEffect(() => {
+    onErrorRef.current = onError;
+  });
+
   const prevKeyRef = useRef(key);
 
   useEffect(() => {
@@ -79,9 +85,9 @@ export function useStorage<ValueType>({
     try {
       storage.setItem(key, serialize(value));
     } catch (error) {
-      onError?.(error);
+      onErrorRef.current?.(error, { key, value });
     }
-  }, [key, value, serialize, storage, onError]);
+  }, [key, value, serialize, storage]);
 
   const fromStorage = useCallback(
     (storedValue?: string | null) => {

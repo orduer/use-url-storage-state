@@ -1,1 +1,4 @@
-export { useUrlStorageState } from './use-url-storage-state';
+export {
+  useUrlStorageState,
+  type useUrlStorageStateParams,
+} from './use-url-storage-state';

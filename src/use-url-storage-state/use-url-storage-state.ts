@@ -5,7 +5,7 @@ import { useStorage } from '@/use-storage/use-storage';
 
 const SEPARATOR = ',';
 
-type useUrlStorageStateParams<T> = {
+export type useUrlStorageStateParams<T> = {
   storage?: Storage;
   key: string;
   prefix?: string;
