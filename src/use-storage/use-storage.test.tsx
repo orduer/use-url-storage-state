@@ -198,6 +198,29 @@ test(`skip updating state when storage event has data that's already updated`, (
   expect(window.localStorage.setItem).not.toHaveBeenCalled();
 });
 
+test(`calls error callback when storage throws an error`, () => {
+  const ex = new DOMException('Storage error', 'QuotaExceededError');
+  vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+    throw ex;
+  });
+  const key = 'error-key';
+  const defaultValue = 'default';
+  const onError = vi.fn();
+
+  renderHook(() =>
+    useStorage({
+      key,
+      defaultValue,
+      storage: window.localStorage,
+      serialize: identity,
+      deserialize: identity,
+      onError,
+    }),
+  );
+
+  expect(onError).toHaveBeenCalledWith(ex);
+});
+
 function identity<T>(value: T) {
   return value;
 }

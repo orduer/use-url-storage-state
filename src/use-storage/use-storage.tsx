@@ -9,6 +9,7 @@ export type StorageProps<ValueType> = {
   deserialize?: (str: string) => ValueType;
   forceInit?: (value?: string) => boolean;
   previousKeys?: string[];
+  onError?: (error: unknown) => void;
 };
 
 function never() {
@@ -37,6 +38,7 @@ export function useStorage<ValueType>({
   deserialize = JSON.parse,
   forceInit = never,
   previousKeys,
+  onError,
 }: StorageProps<ValueType>) {
   const initFromStorage = useCallback(
     (storedValue = storage.getItem(key)) => {
@@ -74,8 +76,12 @@ export function useStorage<ValueType>({
       storage.removeItem(prevKey);
     }
     prevKeyRef.current = key;
-    storage.setItem(key, serialize(value));
-  }, [key, value, serialize, storage]);
+    try {
+      storage.setItem(key, serialize(value));
+    } catch (error) {
+      onError?.(error);
+    }
+  }, [key, value, serialize, storage, onError]);
 
   const fromStorage = useCallback(
     (storedValue?: string | null) => {
