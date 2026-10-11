@@ -1,16 +1,16 @@
 import { useCallback, useEffect, useMemo } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { kebabize } from '@/utils/url-helper';
-import { useStorage } from '@/use-storage/use-storage';
+import { useStorage, type StorageProps } from '@/use-storage/use-storage';
 
 const SEPARATOR = ',';
 
-export type useUrlStorageStateParams<T> = {
-  storage?: Storage;
-  key: string;
+export type useUrlStorageStateParams<T> = Omit<
+  StorageProps<T>,
+  'defaultValue' | 'onError'
+> & {
   prefix?: string;
   defaultValue: T;
-  previousKeys?: string[];
   onError?: (error: unknown, data: { key: string; value: T }) => void;
 };
 
@@ -21,6 +21,8 @@ export function useUrlStorageState<T>({
   storage,
   previousKeys,
   onError,
+  live,
+  forceInit,
 }: useUrlStorageStateParams<T>) {
   const location = useLocation();
   const navigate = useNavigate();
@@ -49,6 +51,8 @@ export function useUrlStorageState<T>({
     serialize: serializeState,
     deserialize: identity,
     storage,
+    live,
+    forceInit,
     previousKeys: resolvedPreviousKeys,
     onError: (error, data) =>
       onError?.(error, { key: storageKey, value: data as T }),
