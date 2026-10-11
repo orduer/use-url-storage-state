@@ -218,7 +218,7 @@ test(`calls error callback when storage throws an error`, () => {
     }),
   );
 
-  expect(onError).toHaveBeenCalledWith(ex);
+  expect(onError).toHaveBeenCalledWith(ex, { key, value: defaultValue });
 });
 
 function identity<T>(value: T) {

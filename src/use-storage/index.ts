@@ -1,1 +1,1 @@
-export { useStorage } from './use-storage';
+export { useStorage, type StorageProps } from './use-storage';
